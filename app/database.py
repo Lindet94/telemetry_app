@@ -1,22 +1,30 @@
+from typing import Any, List, Optional, Union, Sequence
 import asyncpg
-from typing import Optional
+from asyncpg import Record, Pool
 
 class Database:
     def __init__(self):
         self.pool: Optional[asyncpg.Pool] = None
 
-    async def connect(self, dsn: str):
+    async def connect(self, dsn: str) -> None:
         self.pool = await asyncpg.create_pool(dsn)
+        if self.pool is None:
+            raise RuntimeError("Failed to create database connection pool")
 
-    async def close(self):
-        if self.pool:
+    async def close(self) -> None:
+        if self.pool is not None:
             await self.pool.close()
+            self.pool = None
 
-    async def execute(self, query: str, *args):
+    async def execute(self, query: str, *args: Any) -> str:
+        if self.pool is None:
+            raise RuntimeError("Database connection is not established")
         async with self.pool.acquire() as connection:
             return await connection.execute(query, *args)
 
-    async def fetch(self, query: str, *args):
+    async def fetch(self, query: str, *args: Any) -> List[Record]:
+        if self.pool is None:
+            raise RuntimeError("Database connection is not established")
         async with self.pool.acquire() as connection:
             return await connection.fetch(query, *args)
 
