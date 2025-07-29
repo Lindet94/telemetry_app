@@ -3,8 +3,8 @@ import logging
 import os
 
 from fastapi import FastAPI, HTTPException, status
-from asyncpg.exceptions import PostgresError
 from fastapi.middleware.cors import CORSMiddleware
+from asyncpg.exceptions import PostgresError
 
 from app.database import db
 

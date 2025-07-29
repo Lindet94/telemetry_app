@@ -1,6 +1,9 @@
-from typing import Any, List, Optional, Union, Sequence
+"""Database session management."""
+
+from typing import Any, List, Optional
+
 import asyncpg
-from asyncpg import Record, Pool
+from asyncpg import Record
 
 class Database:
     def __init__(self):
@@ -27,5 +30,11 @@ class Database:
             raise RuntimeError("Database connection is not established")
         async with self.pool.acquire() as connection:
             return await connection.fetch(query, *args)
+
+    async def fetchrow(self, query: str, *args: Any) -> Optional[Record]:
+        if self.pool is None:
+            raise RuntimeError("Database connection is not established")
+        async with self.pool.acquire() as connection:
+            return await connection.fetchrow(query, *args)
 
 db = Database()
