@@ -14,6 +14,8 @@ class ExpenseBase(BaseModel):
 class ExpenseCreate(ExpenseBase):
     """For creating an expense object
     """
+    pass
+
 
 class Expense(ExpenseBase):
     """Expense model with database-specific fields
@@ -25,4 +27,4 @@ class Expense(ExpenseBase):
     class Config:
         """Orm config
         """
-        orm_mode = True
+        from_attributes = True

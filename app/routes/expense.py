@@ -23,7 +23,7 @@ async def create_expense(expense: ExpenseCreate):
             expense.category,
             expense.description
         )
-        return result
+        return dict(result)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -39,9 +39,35 @@ async def list_expenses():
     ORDER BY created_at DESC
     """
     try:
-        return await db.fetch(query)
+        results = await db.fetch(query)
+        return [dict(result) for result in results]
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error fetching expenses: {str(e)}",
+        ) from e
+
+
+@router.get("/{expense_id}", response_model=Expense)
+async def get_expense(expense_id: int):
+    """Get a single expense by its ID."""
+    # HINT: In SQL, how do you filter rows based on a column's value?
+    # HINT: Your database driver uses $1, $2, etc. for parameters.
+    query = """
+    SELECT id, amount, vendor, category, description, created_at, updated_at
+    FROM expenses
+    WHERE id = $1
+    """
+    try:
+        result = await db.fetchrow(query, expense_id)
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Expense with ID {expense_id} not found"
+            )
+        return dict(result)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching expense: {str(e)}",
         ) from e

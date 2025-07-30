@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from asyncpg.exceptions import PostgresError
 
 from app.database import db
+from app.routes import expense
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +20,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+# Include the expense router
+app.include_router(expense.router)
 
 # Configure CORS
 app.add_middleware(
