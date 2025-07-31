@@ -100,3 +100,28 @@ async def update_expense(expense_id: int, expense: ExpenseCreate):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error updating expense: {str(e)}",
         ) from e
+
+
+@router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_expense(expense_id: int):
+
+    check_query = "SELECT id FROM expenses WHERE id = $1"
+    delete_query = "DELETE FROM expenses WHERE id = $1"
+
+    try:
+        exists = await db.fetchrow(check_query,expense_id)
+
+        if not exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Expense with ID {expense_id} not found"
+            )
+        
+        await db.execute(delete_query, expense_id)
+        return None
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error updating expense: {str(e)}",
+        ) from e
