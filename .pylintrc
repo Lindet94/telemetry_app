@@ -1,0 +1,3 @@
+[MAIN]
+# Add the project root to the Python path so that Pylint can find the 'app' module.
+init-hook='import sys; sys.path.append(".")'

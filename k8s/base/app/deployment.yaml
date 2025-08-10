@@ -1,0 +1,25 @@
+# k8s/base/app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telemetry-app
+  template:
+    metadata:
+      labels:
+        app: telemetry-app
+    spec:
+      containers:
+      - name: telemetry-app
+        image: telemetry-app:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://telemetryapp_user:postgres@postgres:5432/telemetry"
+        - name: POSTGRES_PASSWORD
+          value: postgres

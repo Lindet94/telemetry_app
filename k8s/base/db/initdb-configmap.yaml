@@ -1,0 +1,21 @@
+# k8s/base/db/initdb-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+data:
+  01-init.sql: |
+    CREATE USER telemetryapp_user WITH PASSWORD 'postgres';
+    CREATE DATABASE telemetry OWNER telemetryapp_user;
+    GRANT ALL PRIVILEGES ON DATABASE telemetry TO telemetryapp_user;
+  02-schema.sql: |
+    \c telemetry
+    CREATE TABLE IF NOT EXISTS expenses (
+        id SERIAL PRIMARY KEY,
+        amount NUMERIC(10, 2) NOT NULL,
+        vendor VARCHAR(100) NOT NULL,
+        category VARCHAR(50) NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );

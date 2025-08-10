@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: telemetry-db
+    environment:
+      POSTGRES_USER: telemetryapp_user
+      POSTGRES_PASSWORD: postgres # This is the password for the PostgreSQL user
+      POSTGRES_DB: telemetry
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U telemetryapp_user -d telemetry" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telemetry-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://telemetryapp_user:postgres@db:5432/telemetry # Make sure this matches the password above
+      - POSTGRES_PASSWORD=postgres # Explicitly pass the password as an environment variable
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - ./init_db.py:/app/init_db.py # Make sure init_db.py is mounted
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

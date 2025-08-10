@@ -85,6 +85,6 @@ coverage.xml
 # Debug
 *.py,cover
 
-#Lerning docs
-docs/
-lessons/
+#Learning docs
+# docs/
+# lessons/
