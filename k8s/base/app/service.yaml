@@ -1,0 +1,13 @@
+# k8s/base/app/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: telemetry-app
+spec:
+  selector:
+    app: telemetry-app
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort
