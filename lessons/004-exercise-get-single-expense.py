@@ -7,6 +7,7 @@ Instructions:
 3.  The query should select an expense from the 'expenses' table where the 'id' matches the `expense_id` provided to the function.
 4.  Once you've written the query, you can copy this new route into your `app/routes/expense.py` file to test it out.
 """
+
 from fastapi import APIRouter, HTTPException, status
 
 from app.models.expense import Expense
@@ -31,7 +32,7 @@ async def get_expense(expense_id: int):
         if not result:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Expense with ID {expense_id} not found"
+                detail=f"Expense with ID {expense_id} not found",
             )
         return result
     except Exception as e:

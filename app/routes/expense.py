@@ -1,4 +1,5 @@
 """Expense-related API routes."""
+
 from typing import List
 from fastapi import APIRouter, HTTPException, status
 
@@ -6,6 +7,7 @@ from app.models.expense import Expense, ExpenseCreate
 from app.database import db
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
+
 
 @router.post("/", response_model=Expense, status_code=status.HTTP_201_CREATED)
 async def create_expense(expense: ExpenseCreate):
@@ -17,18 +19,15 @@ async def create_expense(expense: ExpenseCreate):
     """
     try:
         result = await db.fetchrow(
-            query,
-            expense.amount,
-            expense.vendor,
-            expense.category,
-            expense.description
+            query, expense.amount, expense.vendor, expense.category, expense.description
         )
         return dict(result)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error creating expense: {str(e)}"
+            detail=f"Error creating expense: {str(e)}",
         ) from e
+
 
 @router.get("/", response_model=List[Expense])
 async def list_expenses():
@@ -61,7 +60,7 @@ async def get_expense(expense_id: int):
         if not result:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Expense with ID {expense_id} not found"
+                detail=f"Expense with ID {expense_id} not found",
             )
         return dict(result)
     except Exception as e:
@@ -87,12 +86,12 @@ async def update_expense(expense_id: int, expense: ExpenseCreate):
             expense.vendor,
             expense.category,
             expense.description,
-            expense_id
+            expense_id,
         )
         if not result:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Expense with ID {expense_id} not found"
+                detail=f"Expense with ID {expense_id} not found",
             )
         return dict(result)
     except Exception as e:
@@ -109,14 +108,14 @@ async def delete_expense(expense_id: int):
     delete_query = "DELETE FROM expenses WHERE id = $1"
 
     try:
-        exists = await db.fetchrow(check_query,expense_id)
+        exists = await db.fetchrow(check_query, expense_id)
 
         if not exists:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Expense with ID {expense_id} not found"
+                detail=f"Expense with ID {expense_id} not found",
             )
-        
+
         await db.execute(delete_query, expense_id)
         return None
 
