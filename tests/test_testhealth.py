@@ -4,6 +4,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 def test_health_check():
     """Test the health check endpoint."""
     response = client.get("/health")
