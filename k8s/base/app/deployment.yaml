@@ -14,12 +14,39 @@ spec:
         app: telemetry-app
     spec:
       containers:
-      - name: telemetry-app
-        image: telemetry-app:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: DATABASE_URL
-          value: "postgresql://telemetryapp_user:postgres@postgres:5432/telemetry"
-        - name: POSTGRES_PASSWORD
-          value: postgres
+        - name: telemetry-app
+          image: telemetry-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            failureThreshold: 3
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://telemetryapp_user:postgres@postgres:5432/telemetry"
+            - name: POSTGRES_PASSWORD
+              value: postgres
+
+            # small resource hints for stability in minikube
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
