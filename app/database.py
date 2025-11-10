@@ -5,6 +5,7 @@ from typing import Any, List, Optional
 import asyncpg
 from asyncpg import Record
 
+
 class Database:
     def __init__(self):
         self.pool: Optional[asyncpg.Pool] = None
@@ -36,5 +37,6 @@ class Database:
             raise RuntimeError("Database connection is not established")
         async with self.pool.acquire() as connection:
             return await connection.fetchrow(query, *args)
+
 
 db = Database()
