@@ -1,4 +1,5 @@
 """API routes package."""
+
 from fastapi import APIRouter
 
 from . import expense

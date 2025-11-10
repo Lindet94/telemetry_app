@@ -1,4 +1,5 @@
 """Main application package for the Expense Tracker API."""
+
 from fastapi import FastAPI
 
 # Import models to make them available when the app is imported
@@ -8,7 +9,7 @@ from .models.expense import ExpenseBase, ExpenseCreate, Expense
 app = FastAPI(
     title="Expense Tracker API",
     description="API for tracking personal expenses",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 

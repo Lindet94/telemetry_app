@@ -1,0 +1,29 @@
+# k8s/base/monitoring/grafana/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+data:
+  telemetry-dashboard.json: |-
+    {
+      "annotations": {
+        "list": []
+      },
+      "panels": [
+        {
+          "title": "Requests",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(http_requests_total[5m])",
+              "legendFormat": "{{handler}}",
+              "refId": "A"
+            }
+          ]
+        }
+      ],
+      "title": "Telemetry Dashboard",
+      "version": 1
+    }
