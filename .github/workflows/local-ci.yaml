@@ -37,7 +37,6 @@ jobs:
         with:
           file: ./coverage.xml
 
-  # Optional: Build Docker image without pushing
   build:
     needs: test
     runs-on: ubuntu-latest
