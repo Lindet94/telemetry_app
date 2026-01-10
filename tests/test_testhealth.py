@@ -1,4 +1,9 @@
-# tests/test_health.py
+"""Tests for the health check endpoint.
+
+This module contains tests to verify that the application's health
+check endpoint is functioning correctly.
+"""
+
 from fastapi.testclient import TestClient
 from app.main import app
 

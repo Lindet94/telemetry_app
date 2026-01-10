@@ -72,6 +72,18 @@ async def get_expense(expense_id: int):
 
 @router.put("/{expense_id}", response_model=Expense)
 async def update_expense(expense_id: int, expense: ExpenseCreate):
+    """Update an existing expense by its ID.
+
+    Args:
+        expense_id: The ID of the expense to update.
+        expense: The updated expense data.
+
+    Returns:
+        The updated expense with all fields including timestamps.
+
+    Raises:
+        HTTPException: 404 if expense is not found, 500 for database errors.
+    """
     query = """
     UPDATE expenses
     SET amount = $1, vendor = $2, category = $3, description = $4, updated_at = NOW()
@@ -103,7 +115,17 @@ async def update_expense(expense_id: int, expense: ExpenseCreate):
 
 @router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_expense(expense_id: int):
+    """Delete an expense by its ID.
 
+    Args:
+        expense_id: The ID of the expense to delete.
+
+    Returns:
+        None (HTTP 204 No Content on success).
+
+    Raises:
+        HTTPException: 404 if expense is not found, 500 for database errors.
+    """
     check_query = "SELECT id FROM expenses WHERE id = $1"
     delete_query = "DELETE FROM expenses WHERE id = $1"
 
